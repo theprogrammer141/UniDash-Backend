@@ -1,10 +1,18 @@
-import arcjet, {detectBot, shield, tokenBucket, slidingWindow} from "@arcjet/node";
+import "dotenv/config";
+import arcjet, {detectBot, shield, slidingWindow} from "@arcjet/node";
 
-if(!process.env.ARCJET_KEY && process.env.NODE_ENV === "test") {
-    console.log("ARCJET_KEY environment variable is missing!");
+const arcjetKey = process.env.ARCJET_KEY;
+
+if (!arcjetKey) {
+    if (process.env.NODE_ENV === "test") {
+        console.log("ARCJET_KEY environment variable is missing; Arcjet is bypassed in tests.");
+    } else {
+        throw new Error("ARCJET_KEY environment variable is missing in .env file");
+    }
 }
+
 const aj = arcjet({
-    key: process.env.ARCJET_KEY!,
+    key: arcjetKey ?? "",
     rules: [
         shield({ mode: "LIVE" }),
         detectBot({

@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import aj from "../config/arcjet.js";
 import {ArcjetNodeRequest, slidingWindow} from "@arcjet/node";
+import {isSpoofedBot} from "@arcjet/inspect";
 
 const securityMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if(process.env.NODE_ENV === "test") return next();
@@ -62,6 +63,20 @@ const securityMiddleware = async (req: Request, res: Response, next: NextFunctio
             return res.status(403).json({
                 error: "Forbidden",
                 message,
+            });
+        }
+
+        if(decision.results.some(isSpoofedBot)){
+            return res.status(403).json({
+                error: "Forbidden",
+                message: "Spoofed automated requests are not allowed",
+            });
+        }
+
+        if(decision.isDenied()){
+            return res.status(403).json({
+                error: "Forbidden",
+                message: "Request denied by security policy",
             });
         }
 
