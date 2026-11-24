@@ -8,6 +8,13 @@
       "when": 1794833674054,
       "tag": "0000_big_nocturne",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795446332705,
+      "tag": "0001_add_auth_classes_enrollments",
+      "breakpoints": true
     }
   ]
 }
